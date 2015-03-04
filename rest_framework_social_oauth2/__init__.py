@@ -1,3 +1,3 @@
-__version__ = "0.0.0"
+__version__ = "0.0.1"
 __description__ = """This module provides a python-social-auth and oauth2 support for django-rest-framework"""
 
