@@ -102,6 +102,10 @@ Ask a token for an user using curl :
 
 `client_id` and `client_secret` are the keys generated automatically that you can find in the model Application you created.
 
+Now let's imagine you need to refresh your token :
+
+    curl -X POST -d "grant_type=refresh_token&client_id=<client_id>&client_secret=<client_secret>&refresh_token=<your_refresh_token>" http://localhost:8000/auth/token
+
 Now let's try something else ! Let's exchange an external token for a token linked to your app :
 
     curl -H "Authorization: Bearer backend backend_token" http://localhost:8000/auth/convert-token

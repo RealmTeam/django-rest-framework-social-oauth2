@@ -16,14 +16,16 @@ from datetime import datetime, timedelta
 @authentication_classes([SocialAuthentication])
 def convert_token(request):
     app = Application.objects.get(name=PROPRIETARY_APPLICATION_NAME)
-    try:
-        token = AccessToken.objects.get(user=request.user, application=app)
-    except AccessToken.DoesNotExist:
+    code = status.HTTP_200_OK
+
+    token = AccessToken.objects.filter(user=request.user, application=app).order_by('expires').last()
+    if not token:
         token = AccessToken.objects.create(user=request.user, application=app,
             token=generate_token(), expires=datetime.now() + timedelta(days=1),
             scope="read write")
         refresh_token = RefreshToken.objects.create(access_token=token,
             token=generate_token(), user=request.user, application=app)
+        code = status.HTTP_201_CREATED
     else:
         try:
             refresh_token = RefreshToken.objects.get(access_token=token,
@@ -38,4 +40,4 @@ def convert_token(request):
         "token_type": "Bearer",
         "expires_in": int((token.expires - datetime.now()).total_seconds()),
         "scope": token.scope
-    }, status=status.HTTP_201_CREATED)
+    }, status=code)
