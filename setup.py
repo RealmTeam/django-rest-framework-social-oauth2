@@ -7,7 +7,7 @@ setup(
     long_description=open('README.rst').read(),
     author='Philip Garnero',
     author_email='philip.garnero@gmail.com',
-    url='http://pypi.python.org/pypi/django-rest-framework-social-oauth2',
+    url='https://github.com/PhilipGarnero/django-rest-framework-social-oauth2',
     license='MIT',
     packages=find_packages(),
     classifiers=[

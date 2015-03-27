@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import permissions
 
 from oauth2_provider.models import Application, AccessToken, RefreshToken
 from oauthlib.common import generate_token
@@ -14,8 +15,15 @@ from datetime import datetime, timedelta
 
 @api_view(['GET'])
 @authentication_classes([SocialAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def convert_token(request):
-    app = Application.objects.get(name=PROPRIETARY_APPLICATION_NAME)
+    try:
+        app = Application.objects.get(name=PROPRIETARY_APPLICATION_NAME)
+    except Application.DoesNotExist:
+        return Response({
+            "detail": "The server's oauth2 application is not setup or misconfigured"
+        }, status=status.HTTP_403_FORBIDDEN)
+
     code = status.HTTP_200_OK
 
     token = AccessToken.objects.filter(user=request.user, application=app).order_by('expires').last()
