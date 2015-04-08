@@ -180,11 +180,11 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
 
     curl -H "Authorization: Bearer facebook <user_access_token>" http://localhost:8000/auth/convert-token
 
-You can find the id and secret of your app at `https://developers.facebook.com/apps/`_.
+You can find the id and secret of your app at https://developers.facebook.com/apps/.
 
-For testing purposes you can use the access token `<user_access_token>` from `https://developers.facebook.com/tools/accesstoken/`_.
+For testing purposes you can use the access token `<user_access_token>` from https://developers.facebook.com/tools/accesstoken/.
 
-For more information on how to configure python-social-auth with Facebook visit `http://psa.matiasaguirre.net/docs/backends/facebook.html`_.
+For more information on how to configure python-social-auth with Facebook visit http://psa.matiasaguirre.net/docs/backends/facebook.html.
 
 
 
