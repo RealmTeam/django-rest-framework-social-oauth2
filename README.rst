@@ -180,6 +180,10 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
 
     curl -H "Authorization: Bearer facebook <user_access_token>" http://localhost:8000/auth/convert-token
 
+This request returns the "access_token" that you should use on all HTTP requests with DRF. What is happening here is that we are converting a third-party access token (<user_access_token>) in an access token to use with your api and its clients ("access_token"). You should use this token on each and further communications between your system/application and your api to authenticate each request and avoid authenticating with FB every time.
+
+Upon receiving this request, the 'convert_token' view authorizes this execution by first calling the 'SocialAuthentication' class which will validate the token against Facebook, because that is the <backend> specified in the CURL command. Facebook validates the token and returns the user data wich will be use by this class to return the existing User or to create a new one if necessary. Eventually, the 'convert_token' view receives this User and creates or loads an existing token (access_token) and returns it.
+
 You can find the id and secret of your app at https://developers.facebook.com/apps/.
 
 For testing purposes you can use the access token `<user_access_token>` from https://developers.facebook.com/tools/accesstoken/.
