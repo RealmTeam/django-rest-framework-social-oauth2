@@ -11,7 +11,8 @@ from oauthlib.common import generate_token
 from .authentication import SocialAuthentication
 from .settings import PROPRIETARY_APPLICATION_NAME
 
-from datetime import datetime, timedelta
+from django.utils import timezone
+from datetime import timedelta
 
 @api_view(['GET'])
 @authentication_classes([SocialAuthentication])
@@ -29,7 +30,7 @@ def convert_token(request):
     token = AccessToken.objects.filter(user=request.user, application=app).order_by('expires').last()
     if not token:
         token = AccessToken.objects.create(user=request.user, application=app,
-            token=generate_token(), expires=datetime.now() + timedelta(days=1),
+            token=generate_token(), expires=timezone.now() + timedelta(days=1),
             scope="read write")
         refresh_token = RefreshToken.objects.create(access_token=token,
             token=generate_token(), user=request.user, application=app)
@@ -46,6 +47,6 @@ def convert_token(request):
         "access_token": token.token,
         "refresh_token": refresh_token.token,
         "token_type": "Bearer",
-        "expires_in": int((token.expires - datetime.now()).total_seconds()),
+        "expires_in": int((token.expires - timezone.now()).total_seconds()),
         "scope": token.scope
     }, status=code)

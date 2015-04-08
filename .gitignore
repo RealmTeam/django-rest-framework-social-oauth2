@@ -52,3 +52,37 @@ docs/_build/
 
 # PyBuilder
 target/
+
+*.DS_Store
+*.pyc
+
+### Sublime Files ###
+*.sublime-project
+*.sublime-workspace
+
+### OSX ###
+.DS_Store
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+### Linux ###
+.*
+!.gitignore
+*~
+
+# KDE
+.directory
+
+### Windows ###
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
