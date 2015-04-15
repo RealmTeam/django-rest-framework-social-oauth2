@@ -28,7 +28,8 @@ def convert_token(request):
     code = status.HTTP_200_OK
 
     token = AccessToken.objects.filter(user=request.user, application=app).order_by('expires').last()
-    if not token:
+    # If the token is goinf to expire within the minute, we generate a new one
+    if not token or int((token.expires - timezone.now()).total_seconds()) < 60:
         token = AccessToken.objects.create(user=request.user, application=app,
             token=generate_token(), expires=timezone.now() + timedelta(days=1),
             scope="read write")
