@@ -116,6 +116,9 @@ Testing the setup
 This is possible because convert_token is an api_view using 'rest_framework_social_oauth2.authentication.SocialAuthentication' as an authentication class.
 This class simply gets the backend and the backend token from the `Authorization` header and try to authenticate the user using the right external provider.
 
+- Finally, let's revoke your token :
+    curl -X POST -d "client_id=<client_id>&client_secret=<client_secret>&token=<your_token>" http://localhost:8000/auth/revoke-token
+
 If you have any questions feel free to explore the code (there is very little) and to ask me.
 
 
