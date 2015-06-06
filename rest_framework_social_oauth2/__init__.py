@@ -1,4 +1,4 @@
 """python-social-auth and oauth2 support for django-rest-framework"""
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 
 
