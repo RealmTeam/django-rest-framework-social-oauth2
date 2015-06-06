@@ -6,13 +6,14 @@ from rest_framework import status
 from rest_framework import permissions
 
 from oauth2_provider.models import Application, AccessToken, RefreshToken
+from oauth2_provider.ext.rest_framework import OAuth2Authentication
 from oauthlib.common import generate_token
-
 from .authentication import SocialAuthentication
 from .settings import PROPRIETARY_APPLICATION_NAME
 
 from django.utils import timezone
 from datetime import timedelta
+
 
 @api_view(['GET'])
 @authentication_classes([SocialAuthentication])
@@ -23,26 +24,14 @@ def convert_token(request):
     except Application.DoesNotExist:
         return Response({
             "detail": "The server's oauth2 application is not setup or misconfigured"
-        }, status=status.HTTP_403_FORBIDDEN)
+        }, status=status.HTTP_501_NOT_IMPLEMENTED)
 
-    code = status.HTTP_200_OK
-
-    token = AccessToken.objects.filter(user=request.user, application=app).order_by('expires').last()
-    # If the token is goinf to expire within the minute, we generate a new one
-    if not token or int((token.expires - timezone.now()).total_seconds()) < 60:
-        token = AccessToken.objects.create(user=request.user, application=app,
-            token=generate_token(), expires=timezone.now() + timedelta(days=1),
-            scope="read write")
-        refresh_token = RefreshToken.objects.create(access_token=token,
-            token=generate_token(), user=request.user, application=app)
-        code = status.HTTP_201_CREATED
-    else:
-        try:
-            refresh_token = RefreshToken.objects.get(access_token=token,
-                user=request.user, application=app)
-        except RefreshToken.DoesNotExist:
-            refresh_token = RefreshToken.objects.create(access_token=token,
-                token=generate_token(), user=request.user, application=app)
+    token = AccessToken.objects.create(user=request.user, application=app,
+        token=generate_token(), expires=timezone.now() + timedelta(days=1),
+        scope="read write")
+    refresh_token = RefreshToken.objects.create(access_token=token,
+        token=generate_token(), user=request.user, application=app)
+    code = status.HTTP_201_CREATED
 
     return Response({
         "access_token": token.token,
@@ -50,4 +39,20 @@ def convert_token(request):
         "token_type": "Bearer",
         "expires_in": int((token.expires - timezone.now()).total_seconds()),
         "scope": token.scope
-    }, status=code)
+    }, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+@authentication_classes([OAuth2Authentication])
+@permission_classes([permissions.IsAuthenticated])
+def invalidate_sessions(request):
+    try:
+        app = Application.objects.get(name=PROPRIETARY_APPLICATION_NAME)
+    except Application.DoesNotExist:
+        return Response({
+            "detail": "The server's oauth2 application is not setup or misconfigured"
+        }, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    tokens = AccessToken.objects.filter(user=request.user, application=app)
+    tokens.delete()
+    return Response({}, status=status.HTTP_204_NO_CONTENT)

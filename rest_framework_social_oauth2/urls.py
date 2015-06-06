@@ -3,7 +3,7 @@
 from django.conf.urls import url, patterns, include
 from oauth2_provider.views import AuthorizationView, TokenView, RevokeTokenView
 
-from .views import convert_token
+from .views import convert_token, invalidate_sessions
 
 urlpatterns = patterns(
     '',
@@ -12,4 +12,5 @@ urlpatterns = patterns(
     url('', include('social.apps.django_app.urls', namespace='social')),
     url(r'^convert-token/?$', convert_token, name="convert_token"),
     url(r'^revoke-token/?$', RevokeTokenView.as_view(), name="revoke_token"),
+    url(r'^invalidate-sessions/?$', invalidate_sessions, name="invalidate_sessions")
 )
