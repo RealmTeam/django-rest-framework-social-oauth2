@@ -3,11 +3,12 @@
 from django.core.urlresolvers import reverse
 
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
-from rest_framework import exceptions
+from rest_framework import exceptions, HTTP_HEADER_ENCODING
 
 from social.apps.django_app.views import NAMESPACE
 from social.apps.django_app.utils import load_backend, load_strategy
 from social.exceptions import MissingBackend
+from social.utils import requests
 
 
 class SocialAuthentication(BaseAuthentication):
@@ -28,10 +29,10 @@ class SocialAuthentication(BaseAuthentication):
         Returns two-tuple of (user, token) if authentication succeeds,
         or None otherwise.
         """
+        auth_header = get_authorization_header(request).decode(HTTP_HEADER_ENCODING)
+        auth = auth_header.split()
 
-        auth = get_authorization_header(request).split()
-
-        if not auth or auth[0].lower() != b'bearer':
+        if not auth or auth[0].lower() != 'bearer':
             return None
 
         if len(auth) == 1:
@@ -55,7 +56,11 @@ class SocialAuthentication(BaseAuthentication):
             msg = 'Invalid token header. Invalid backend.'
             raise exceptions.AuthenticationFailed(msg)
 
-        user = backend.do_auth(access_token=token)
+        try:
+            user = backend.do_auth(access_token=token)
+        except requests.HTTPError as e:
+            msg = e.response.text
+            raise exceptions.AuthenticationFailed(msg)
 
         if not user:
             msg = 'Bad credentials.'
