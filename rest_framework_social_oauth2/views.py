@@ -1,57 +1,60 @@
 # -*- coding: utf-8 -*-
 
+from django.http import HttpResponse
+from django.views.generic import View
+from braces.views import CsrfExemptMixin
+
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 
-from oauth2_provider.models import Application, AccessToken, RefreshToken
+from oauth2_provider.models import Application, AccessToken
+from oauth2_provider.settings import oauth2_settings
+from oauth2_provider.views.mixins import OAuthLibMixin
 from oauth2_provider.ext.rest_framework import OAuth2Authentication
-from oauthlib.common import generate_token
-from .authentication import SocialAuthentication
-from .settings import PROPRIETARY_APPLICATION_NAME
 
-from django.utils import timezone
-from datetime import timedelta
+from .oauth2_backends import KeepRequestCore
+from .oauth2_endpoints import SocialTokenServer
 
 
-@api_view(['GET'])
-@authentication_classes([SocialAuthentication])
-@permission_classes([permissions.IsAuthenticated])
-def convert_token(request):
-    try:
-        app = Application.objects.get(name=PROPRIETARY_APPLICATION_NAME)
-    except Application.DoesNotExist:
-        return Response({
-            "detail": "The server's oauth2 application is not setup or misconfigured"
-        }, status=status.HTTP_501_NOT_IMPLEMENTED)
+class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, View):
+    """
+    Implements an endpoint to provide access tokens
+    The endpoint is used in the following flows:
+    * Authorization code
+    * Password
+    * Client credentials
+    """
+    server_class = SocialTokenServer
+    validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
+    oauthlib_backend_class = KeepRequestCore
 
-    token = AccessToken.objects.create(user=request.user, application=app,
-        token=generate_token(), expires=timezone.now() + timedelta(days=1),
-        scope="read write")
-    refresh_token = RefreshToken.objects.create(access_token=token,
-        token=generate_token(), user=request.user, application=app)
-    code = status.HTTP_201_CREATED
+    def post(self, request, *args, **kwargs):
+        url, headers, body, status = self.create_token_response(request)
+        response = HttpResponse(content=body, status=status)
 
-    return Response({
-        "access_token": token.token,
-        "refresh_token": refresh_token.token,
-        "token_type": "Bearer",
-        "expires_in": int((token.expires - timezone.now()).total_seconds()),
-        "scope": token.scope
-    }, status=status.HTTP_201_CREATED)
+        for k, v in headers.items():
+            response[k] = v
+        return response
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([OAuth2Authentication])
 @permission_classes([permissions.IsAuthenticated])
 def invalidate_sessions(request):
+    client_id = request.POST.get("client_id", None)
+    if client_id is None:
+        return Response({
+            "client_id": ["This field is required."]
+        }, status=status.HTTP_400_BAD_REQUEST)
+
     try:
-        app = Application.objects.get(name=PROPRIETARY_APPLICATION_NAME)
+        app = Application.objects.get(client_id=client_id)
     except Application.DoesNotExist:
         return Response({
-            "detail": "The server's oauth2 application is not setup or misconfigured"
-        }, status=status.HTTP_501_NOT_IMPLEMENTED)
+            "detail": "The application linked to the provided client_id could not be found."
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     tokens = AccessToken.objects.filter(user=request.user, application=app)
     tokens.delete()
