@@ -1,6 +1,9 @@
 Django rest-framework Social Oauth2
 ===================================
 
+.. image:: https://badge.fury.io/py/django-rest-framework-social-oauth2.svg
+    :target: http://badge.fury.io/py/django-rest-framework-social-oauth2
+
 This module provides a python-social-auth and oauth2 support for django-rest-framework.
 
 The first aim of this package is to help setting up social auth for your rest api. It also helps setting up your Oauth2 provider.
@@ -72,9 +75,7 @@ You can then enable the authentication classes for django rest framework by defa
        'django.contrib.auth.backends.ModelBackend',
     )
 
-
-The two only settings of this app are :
- - PROPRIETARY_APPLICATION_NAME sets the name of your client , defaults to "Owner"
+The only settings of this app is :
  - PROPRIETARY_BACKEND_NAME sets the name of your Oauth2 social backend (e.g Facebook), defaults to "Django"
 
 
@@ -82,9 +83,9 @@ Now go to django admin and add a new Application.
  - client_id and client_secret shouldn't be changed
  - user should be your superuser
  - redirect_uris should be left blank
- - client_type should be set to public
+ - client_type should be set to confidential
  - authorization_grant_type should be set to 'Resource owner password-based'
- - name should be set to the value of PROPRIETARY_APPLICATION_NAME (by default its value is "Owner")
+ - name can be set to whatever you want
 
 
 The installation is done, you can now test the app.
@@ -108,22 +109,42 @@ Testing the setup
 
 - Now let's try something else ! Let's exchange an external token for a token linked to your app :
 
-    curl -H "Authorization: Bearer <backend> <backend_token>" http://localhost:8000/auth/convert-token
+    curl -X POST -d "grant_type=convert_token&client_id=<client_id>&client_secret=<client_secret>&backend=<backend>&token=<backend_token>" http://localhost:8000/auth/convert-token
 
-`<backend>` here needs to be replaced by the name of an enabled backend (facebook for example if that's the case). Note that PROPRIETARY_BACKEND_NAME is a valid backend name but there is no use in using it here.
+`<backend>` here needs to be replaced by the name of an enabled backend (facebook for example if that's the case). Note that PROPRIETARY_BACKEND_NAME is a valid backend name but there is no use to do that here.
 `<backend_token>` is for the token you got from the service utilizing an iOS app for example.
 
-This is possible because convert_token is an api_view using 'rest_framework_social_oauth2.authentication.SocialAuthentication' as an authentication class.
-This class simply gets the backend and the backend token from the `Authorization` header and try to authenticate the user using the right external provider.
+- Finally, let's try revoking tokens :
 
-- Finally, let's revoke your token :
-    curl -X POST -d "client_id=<client_id>&client_secret=<client_secret>&token=<your_token>" http://localhost:8000/auth/revoke-token
+    - Revoke a single token :
 
-If you have any questions feel free to explore the code (there is very little) and to ask me.
+        curl -X POST -d "client_id=<client_id>&client_secret=<client_secret>&token=<your_token>" http://localhost:8000/auth/revoke-token
+
+    - Revoke all tokens for an user :
+
+        curl -H "Authorization: Bearer <token>" -X POST -d "client_id=<client_id>" http://localhost:8000/auth/invalidate-sessions
 
 
-Facebook Backend
------------------
+If you have any questions feel free to ask me.
+
+
+Social Authentication
+---------------------
+
+As you probably noticed, we enabled a default authentication backend called SocialAuthentication.
+This backend lets you register and authenticate your users seamlessly on your api.
+
+The class simply gets the backend name and token from the Authorization header and try to authenticate the user using the right external provider.
+
+If the user was not registered on your app, it will create a new user to be used.
+
+Example request :
+
+    curl -H "Authorization: Bearer <backend_name> <backend_token>" http://localhost:8000/route/to/your/view
+
+
+Facebook Example
+----------------
 
 To use Facebook as the authorization backend of your django-rest-framework api, your settings.py file should look like this:
 
@@ -181,20 +202,12 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
 
 - You can test these settings by running the following command :
 
-    curl -H "Authorization: Bearer facebook <user_access_token>" http://localhost:8000/auth/convert-token
+    curl -X POST -d "grant_type=convert_token&client_id=<client_id>&client_secret=<client_secret>&backend=facebook&token=<facebook_token>" http://localhost:8000/auth/convert-token
 
 This request returns the "access_token" that you should use on all HTTP requests with DRF. What is happening here is that we are converting a third-party access token (<user_access_token>) in an access token to use with your api and its clients ("access_token"). You should use this token on each and further communications between your system/application and your api to authenticate each request and avoid authenticating with FB every time.
-
-Upon receiving this request, the 'convert_token' view authorizes this execution by first calling the 'SocialAuthentication' class which will validate the token against Facebook, because that is the <backend> specified in the CURL command. Facebook validates the token and returns the user data wich will be use by this class to return the existing User or to create a new one if necessary. Eventually, the 'convert_token' view receives this User and creates or loads an existing token (access_token) and returns it.
 
 You can find the id and secret of your app at https://developers.facebook.com/apps/.
 
 For testing purposes you can use the access token `<user_access_token>` from https://developers.facebook.com/tools/accesstoken/.
 
 For more information on how to configure python-social-auth with Facebook visit http://psa.matiasaguirre.net/docs/backends/facebook.html.
-
-
-
-
-
-
