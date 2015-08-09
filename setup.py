@@ -22,7 +22,7 @@ setup(
     ],
     install_requires=[
         'djangorestframework>=3.0.1',
-        'django-oauth-toolkit>=0.7.2',
+        'django-oauth-toolkit>=0.9.0',
         'python-social-auth>=0.2.2'
     ],
     include_package_data=True,
