@@ -77,7 +77,7 @@ class SocialTokenGrant(RefreshTokenGrant):
         self.validate_scopes(request)
 
         # TODO: Find a better way to pass the django request object
-        strategy = load_strategy(request=request.headers["Django-request-object"])
+        strategy = load_strategy(request=request.django_request)
 
         try:
             backend = load_backend(strategy, request.backend,
