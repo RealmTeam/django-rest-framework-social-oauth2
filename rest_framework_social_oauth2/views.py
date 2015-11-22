@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from django.http import HttpResponse
-from django.views.generic import View
 from braces.views import CsrfExemptMixin
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import permissions
 
@@ -18,7 +19,7 @@ from .oauth2_backends import KeepRequestCore
 from .oauth2_endpoints import SocialTokenServer
 
 
-class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, View):
+class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
     """
     Implements an endpoint to provide access tokens
     The endpoint is used in the following flows:
@@ -26,6 +27,7 @@ class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, View):
     * Password
     * Client credentials
     """
+    permission_classes = (AllowAny,)
     server_class = SocialTokenServer
     validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
     oauthlib_backend_class = KeepRequestCore
