@@ -29,7 +29,13 @@ class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
     oauthlib_backend_class = KeepRequestCore
 
     def post(self, request, *args, **kwargs):
-        url, headers, body, status = self.create_token_response(request)
+
+        # Use the rest framework `.data` to fake the post body of the django request.
+        request._request.POST = request._request.POST.copy()
+        for key, value in request.data.iteritems():
+            request._request.POST[key] = value
+
+        url, headers, body, status = self.create_token_response(request._request)
         response = Response(data=json.loads(body), status=status)
 
         for k, v in headers.items():
