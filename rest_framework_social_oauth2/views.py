@@ -19,7 +19,9 @@ from .oauth2_endpoints import SocialTokenServer
 class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
     """
     Implements an endpoint to provide access tokens
+
     The endpoint is used in the following flows:
+
     * Authorization code
     * Password
     * Client credentials
