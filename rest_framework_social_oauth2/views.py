@@ -29,6 +29,7 @@ class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
     server_class = SocialTokenServer
     validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
     oauthlib_backend_class = KeepRequestCore
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
 
