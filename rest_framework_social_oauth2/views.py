@@ -35,7 +35,7 @@ class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
 
         # Use the rest framework `.data` to fake the post body of the django request.
         request._request.POST = request._request.POST.copy()
-        for key, value in request.data.iteritems():
+        for key, value in request.data.items():
             request._request.POST[key] = value
 
         url, headers, body, status = self.create_token_response(request._request)
