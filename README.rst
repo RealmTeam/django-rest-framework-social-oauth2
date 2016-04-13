@@ -66,7 +66,6 @@ Since Django version 1.8, the TEMPLATE_CONTEXT_PROCESSORS is deprecated, set the
                     'social.apps.django_app.context_processors.backends',
                     'social.apps.django_app.context_processors.login_redirect',
                 ],
-                'debug':True,
             },
         }
     ]
