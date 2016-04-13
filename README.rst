@@ -53,6 +53,23 @@ Add these context processors to your `TEMPLATE_CONTEXT_PROCESSORS`
         'social.apps.django_app.context_processors.login_redirect',
     )
 
+Since Django version 1.8, the TEMPLATE_CONTEXT_PROCESSORS is deprecated, set the 'context_processors' option in the OPTIONS of a DjangoTemplates backend instead.
+
+.. code-block:: python
+
+    TEMPLATES = [
+        {
+            ...
+            'OPTIONS': {
+                'context_processors': [
+                    ...
+                    'social.apps.django_app.context_processors.backends',
+                    'social.apps.django_app.context_processors.login_redirect',
+                ],
+                'debug':True,
+            },
+        }
+    ]
 
 You can then enable the authentication classes for django rest framework by default or per view (add or update the `REST_FRAMEWORK` and `AUTHENTICATION_BACKENDS` entries to your settings.py)
 
