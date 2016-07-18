@@ -174,12 +174,19 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
         'rest_framework_social_oauth2',
     )
 
-    TEMPLATE_CONTEXT_PROCESSORS = (
-        ...
-        # OAuth
-        'social.apps.django_app.context_processors.backends',
-        'social.apps.django_app.context_processors.login_redirect',
-    )
+    TEMPLATES = [
+        {
+            ...
+            'OPTIONS': {
+                'context_processors': [
+                    ...
+                    # OAuth
+                    'social.apps.django_app.context_processors.backends',
+                    'social.apps.django_app.context_processors.login_redirect',
+                ],
+            },
+        }
+    ]
 
     REST_FRAMEWORK = {
         ...
@@ -210,7 +217,7 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
 
     # Facebook configuration
     SOCIAL_AUTH_FACEBOOK_KEY = '<your app id goes here>'
-    SOCIAL_AUTH_FACEBOOK_SECRET = '<your app secret goes here'
+    SOCIAL_AUTH_FACEBOOK_SECRET = '<your app secret goes here>'
 
     # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
     SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
