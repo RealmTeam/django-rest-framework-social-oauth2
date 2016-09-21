@@ -5,21 +5,17 @@ from __future__ import unicode_literals
 import logging
 
 from django.core.urlresolvers import reverse
-
 from oauthlib.oauth2.rfc6749 import errors
 from oauthlib.oauth2.rfc6749.grant_types.refresh_token import RefreshTokenGrant
-
-from social.apps.django_app.views import NAMESPACE
 from social.apps.django_app.utils import load_backend, load_strategy
+from social.apps.django_app.views import NAMESPACE as SOCIAL_AUTH_NAMESPACE
 from social.exceptions import MissingBackend
 from social.utils import requests
-
 
 log = logging.getLogger(__name__)
 
 
 class SocialTokenGrant(RefreshTokenGrant):
-
     """`Refresh token grant`_
     .. _`Refresh token grant`: http://tools.ietf.org/html/rfc6749#section-6
     """
@@ -71,7 +67,7 @@ class SocialTokenGrant(RefreshTokenGrant):
         # We chose refresh_token as a grant_type
         # as we don't want to modify all the codebase.
         # It is also the most permissive and logical grant for our needs.
-        request.grant_type = "refresh_token"
+        request.grant_type = 'refresh_token'
         self.validate_grant_type(request)
 
         self.validate_scopes(request)
@@ -81,7 +77,7 @@ class SocialTokenGrant(RefreshTokenGrant):
 
         try:
             backend = load_backend(strategy, request.backend,
-                                   reverse(NAMESPACE + ":complete", args=(request.backend,)))
+                                   reverse(SOCIAL_AUTH_NAMESPACE + ':complete', args=(request.backend,)))
         except MissingBackend:
             raise errors.InvalidRequestError(
                 description='Invalid backend parameter.',

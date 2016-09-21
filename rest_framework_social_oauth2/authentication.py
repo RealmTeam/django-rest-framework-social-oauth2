@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django.core.urlresolvers import reverse
-
-from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework import exceptions, HTTP_HEADER_ENCODING
-
-from social.apps.django_app.views import NAMESPACE
+from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from social.apps.django_app.utils import load_backend, load_strategy
+from social.apps.django_app.views import NAMESPACE as SOCIAL_AUTH_NAMESPACE
 from social.exceptions import MissingBackend
 from social.utils import requests
 
@@ -51,7 +49,7 @@ class SocialAuthentication(BaseAuthentication):
         strategy = load_strategy(request=request)
 
         try:
-            backend = load_backend(strategy, backend, reverse(NAMESPACE + ":complete", args=(backend,)))
+            backend = load_backend(strategy, backend, reverse(SOCIAL_AUTH_NAMESPACE + ':complete', args=(backend,)))
         except MissingBackend:
             msg = 'Invalid token header. Invalid backend.'
             raise exceptions.AuthenticationFailed(msg)
