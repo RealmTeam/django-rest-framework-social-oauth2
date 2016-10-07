@@ -33,7 +33,7 @@ Add these apps to your `INSTALLED_APPS`
     )
 
 
-Include auth urls to your urls.py
+Include auth urls to your root urls.py
 
 .. code-block:: python
 
@@ -91,8 +91,9 @@ You can then enable the authentication classes for django rest framework by defa
        'django.contrib.auth.backends.ModelBackend',
     )
 
-The only settings of this app is :
+The settings of this app are:
  - PROPRIETARY_BACKEND_NAME sets the name of your Oauth2 social backend (e.g Facebook), defaults to "Django"
+ - REST_AUTH_URL_NAMESPACE sets the namespace for reversing urls. If you want to include the urls of this app in another nested app, you should specify the app name. For example setting this to `v2` and SOCIAL_AUTH_URL_NAMESPACE to 'v2:social' would allow paths like `v2/auth/convert-token/` to work.
 
 
 Now go to django admin and add a new Application.
