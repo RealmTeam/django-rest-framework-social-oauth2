@@ -11,7 +11,7 @@ from oauthlib.oauth2.rfc6749.grant_types.refresh_token import RefreshTokenGrant
 
 from social.apps.django_app.views import NAMESPACE
 from social.apps.django_app.utils import load_backend, load_strategy
-from social.exceptions import MissingBackend
+from social.exceptions import MissingBackend, SocialAuthBaseException
 from social.utils import requests
 
 
@@ -94,6 +94,8 @@ class SocialTokenGrant(RefreshTokenGrant):
                 description="Backend responded with HTTP{0}: {1}.".format(e.response.status_code,
                                                                           e.response.text),
                 request=request)
+        except SocialAuthBaseException as e:
+            raise errors.AccessDeniedError(description=str(e), request=request)
 
         if not user:
             raise errors.InvalidGrantError('Invalid credentials given.', request=request)
