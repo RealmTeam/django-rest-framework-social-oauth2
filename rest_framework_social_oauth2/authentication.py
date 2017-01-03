@@ -5,10 +5,10 @@ from django.core.urlresolvers import reverse
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework import exceptions, HTTP_HEADER_ENCODING
 
-from social.apps.django_app.views import NAMESPACE
-from social.apps.django_app.utils import load_backend, load_strategy
-from social.exceptions import MissingBackend
-from social.utils import requests
+from social_django.views import NAMESPACE
+from social_django.utils import load_backend, load_strategy
+from social_core.exceptions import MissingBackend
+from social_core.utils import requests
 
 
 class SocialAuthentication(BaseAuthentication):

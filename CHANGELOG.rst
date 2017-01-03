@@ -1,6 +1,15 @@
 Change log
 ==========
 
+1.0.5 - 2017-01-03
+------------------
+
+- Updated python-social-auth to social (`Migrating guide <https://github.com/omab/python-social-auth/blob/master/MIGRATING_TO_SOCIAL.md>`_)
+- Wrapped token view and revoke token view in a rest framework APIView
+- Added url namespace
+- Renamed PROPRIETARY_BACKEND_NAME to DRFSO2_PROPRIETARY_BACKEND_NAME
+
+
 1.0.2 - 2015-08-11
 ------------------
 

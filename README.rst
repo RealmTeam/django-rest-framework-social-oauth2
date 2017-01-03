@@ -28,7 +28,7 @@ Add these apps to your `INSTALLED_APPS`
     INSTALLED_APPS = (
         ...
         'oauth2_provider',
-        'social.apps.django_app.default',
+        'social_django',
         'rest_framework_social_oauth2',
     )
 
@@ -49,8 +49,8 @@ Add these context processors to your `TEMPLATE_CONTEXT_PROCESSORS`
 
     TEMPLATE_CONTEXT_PROCESSORS = (
         ...
-        'social.apps.django_app.context_processors.backends',
-        'social.apps.django_app.context_processors.login_redirect',
+        'social_django.context_processors.backends',
+        'social_django.context_processors.login_redirect',
     )
 
 Since Django version 1.8, the TEMPLATE_CONTEXT_PROCESSORS is deprecated, set the 'context_processors' option in the OPTIONS of a DjangoTemplates backend instead.
@@ -63,8 +63,8 @@ Since Django version 1.8, the TEMPLATE_CONTEXT_PROCESSORS is deprecated, set the
             'OPTIONS': {
                 'context_processors': [
                     ...
-                    'social.apps.django_app.context_processors.backends',
-                    'social.apps.django_app.context_processors.login_redirect',
+                    'social_django.context_processors.backends',
+                    'social_django.context_processors.login_redirect',
                 ],
             },
         }
@@ -91,8 +91,9 @@ You can then enable the authentication classes for django rest framework by defa
        'django.contrib.auth.backends.ModelBackend',
     )
 
-The only settings of this app is :
- - PROPRIETARY_BACKEND_NAME sets the name of your Oauth2 social backend (e.g Facebook), defaults to "Django"
+The settings of this app are:
+ - DRFSO2_PROPRIETARY_BACKEND_NAME sets the name of your Oauth2 social backend (e.g Facebook), defaults to "Django"
+ - DRFSO2_URL_NAMESPACE sets the namespace for reversing urls.
 
 
 Now go to django admin and add a new Application.
@@ -170,7 +171,7 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
         ...
         # OAuth
         'oauth2_provider',
-        'social.apps.django_app.default',
+        'social_django',
         'rest_framework_social_oauth2',
     )
 
@@ -181,8 +182,8 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
                 'context_processors': [
                     ...
                     # OAuth
-                    'social.apps.django_app.context_processors.backends',
-                    'social.apps.django_app.context_processors.login_redirect',
+                    'social_django.context_processors.backends',
+                    'social_django.context_processors.login_redirect',
                 ],
             },
         }
@@ -204,8 +205,8 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
         ...
 
         # Facebook OAuth2
-        'social.backends.facebook.FacebookAppOAuth2',
-        'social.backends.facebook.FacebookOAuth2',
+        'social_core.backends.facebook.FacebookAppOAuth2',
+        'social_core.backends.facebook.FacebookOAuth2',
 
         # django-rest-framework-social-oauth2
         'rest_framework_social_oauth2.backends.DjangoOAuth2',
@@ -221,6 +222,9 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
 
     # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
     SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+    SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+        'fields': 'id, name, email'
+    }
 
 
 - You can test these settings by running the following command :
