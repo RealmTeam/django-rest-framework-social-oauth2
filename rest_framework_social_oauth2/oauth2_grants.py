@@ -99,5 +99,9 @@ class SocialTokenGrant(RefreshTokenGrant):
 
         if not user:
             raise errors.InvalidGrantError('Invalid credentials given.', request=request)
+
+        if not user.is_active:
+            raise errors.InvalidGrantError('User inactive or deleted.', request=request)
+        
         request.user = user
         log.debug('Authorizing access to user %r.', request.user)
