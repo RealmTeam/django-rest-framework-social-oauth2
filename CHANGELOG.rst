@@ -1,6 +1,12 @@
 Change log
 ==========
 
+1.0.6 - 2017-05-22
+------------------
+
+- Fix a bug where inactive users could still get tokens
+
+
 1.0.5 - 2017-01-03
 ------------------
 
