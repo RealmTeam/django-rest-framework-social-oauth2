@@ -108,7 +108,7 @@ Now go to django admin and add a new Application.
 The installation is done, you can now test the app.
 
 Remember that you need to read the docs from `python-social-auth` and `django-oauth-toolkit` if you want to go further.
-If you want to enable a social backend (like facebook), check the docs of `python-social-auth` about `supported backends <http://psa.matiasaguirre.net/docs/backends/index.html#social-backends>`_ or `django-social-auth` about `bakends system <http://django-social-auth.readthedocs.org/en/latest/backends/index.html>`_.
+If you want to enable a social backend (like facebook), check the docs of `python-social-auth` about `supported backends <http://python-social-auth.readthedocs.io/en/latest/backends/index.html#supported-backends>`_ or `django-social-auth` about `bakends system <http://python-social-auth.readthedocs.io/en/latest/configuration/django.html>`_.
 
 
 Testing the setup
@@ -237,4 +237,4 @@ You can find the id and secret of your app at https://developers.facebook.com/ap
 
 For testing purposes you can use the access token `<user_access_token>` from https://developers.facebook.com/tools/accesstoken/.
 
-For more information on how to configure python-social-auth with Facebook visit http://psa.matiasaguirre.net/docs/backends/facebook.html.
+For more information on how to configure python-social-auth with Facebook visit http://python-social-auth.readthedocs.io/en/latest/backends/facebook.html.
