@@ -88,7 +88,12 @@ class SocialTokenGrant(RefreshTokenGrant):
                 request=request)
 
         try:
-            user = backend.do_auth(access_token=request.token)
+            # user = backend.do_auth(access_token=request.token) does not pass id_token necessary for
+            # AzureADOAuth2.azuread to execute user_data() when associating an account with an Azure AD
+            # user. The below change passes the kwarg "response" to fix unhandled exception: 
+            #\social_core\backends\azuread.py", line 80, in user_data
+            #    id_token = response.get('id_token')
+            user = backend.do_auth(access_token=request.token, response={'id_token': request.id_token})
         except requests.HTTPError as e:
             raise errors.InvalidRequestError(
                 description="Backend responded with HTTP{0}: {1}.".format(e.response.status_code,
