@@ -93,7 +93,10 @@ class SocialTokenGrant(RefreshTokenGrant):
             # user. The below change passes the kwarg "response" to fix unhandled exception: 
             #\social_core\backends\azuread.py", line 80, in user_data
             #    id_token = response.get('id_token')
-            user = backend.do_auth(access_token=request.token, response={'id_token': request.id_token})
+            if hasattr(request, 'id_token'):
+                user = backend.do_auth(access_token=request.token, response={'id_token': request.id_token})
+            else:
+                user = backend.do_auth(access_token=request.token)
         except requests.HTTPError as e:
             raise errors.InvalidRequestError(
                 description="Backend responded with HTTP{0}: {1}.".format(e.response.status_code,
