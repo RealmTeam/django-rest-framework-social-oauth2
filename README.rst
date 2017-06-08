@@ -98,7 +98,7 @@ The settings of this app are:
 
 Now go to django admin and add a new Application.
  - client_id and client_secret shouldn't be changed
- - user should be your superuser
+ - user should NOT be your superuser
  - redirect_uris should be left blank
  - client_type should be set to confidential
  - authorization_grant_type should be set to 'Resource owner password-based'
