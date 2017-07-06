@@ -8,7 +8,7 @@ This module provides a python-social-auth and oauth2 support for django-rest-fra
 
 The first aim of this package is to help setting up social auth for your rest api. It also helps setting up your Oauth2 provider.
 
-This package is relying on `python-social-auth <http://psa.matiasaguirre.net/docs/index.html>`_ and `django-oauth-toolkit <https://django-oauth-toolkit.readthedocs.org>`_.
+This package is relying on `python-social-auth <http://python-social-auth.readthedocs.io>`_ and `django-oauth-toolkit <https://django-oauth-toolkit.readthedocs.org>`_.
 You should probably read their docs if you were to go further than what is done here.
 If you have some hard time understanding Oauth2 you can read a simple explanation `here <https://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified>`_.
 
