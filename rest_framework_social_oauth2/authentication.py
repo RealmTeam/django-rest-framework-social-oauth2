@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ImportError:  # Will be removed in Django 2.0
+    from django.core.urlresolvers import reverse
 
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework import exceptions, HTTP_HEADER_ENCODING

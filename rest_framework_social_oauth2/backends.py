@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
+try:
+    from django.urls import reverse
+except ImportError:  # Will be removed in Django 2.0
+    from django.core.urlresolvers import reverse
+
 from social_core.backends.oauth import BaseOAuth2
-from django.core.urlresolvers import reverse
 from .settings import DRFSO2_PROPRIETARY_BACKEND_NAME, DRFSO2_URL_NAMESPACE
 
 class DjangoOAuth2(BaseOAuth2):
