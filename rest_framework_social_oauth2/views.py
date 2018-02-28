@@ -35,8 +35,9 @@ class TokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
 
     def post(self, request, *args, **kwargs):
         # Use the rest framework `.data` to fake the post body of the django request.
+        mutable_data = request.data.copy()
         request._request.POST = request._request.POST.copy()
-        for key, value in request.data.items():
+        for key, value in mutable_data.items():
             request._request.POST[key] = value
 
         url, headers, body, status = self.create_token_response(request._request)
@@ -63,8 +64,9 @@ class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
 
     def post(self, request, *args, **kwargs):
         # Use the rest framework `.data` to fake the post body of the django request.
+        mutable_data = request.data.copy()
         request._request.POST = request._request.POST.copy()
-        for key, value in request.data.items():
+        for key, value in mutable_data.items():
             request._request.POST[key] = value
 
         url, headers, body, status = self.create_token_response(request._request)
@@ -86,8 +88,9 @@ class RevokeTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
 
     def post(self, request, *args, **kwargs):
         # Use the rest framework `.data` to fake the post body of the django request.
+        mutable_data = request.data.copy()
         request._request.POST = request._request.POST.copy()
-        for key, value in request.data.items():
+        for key, value in mutable_data.items():
             request._request.POST[key] = value
 
         url, headers, body, status = self.create_revocation_response(request._request)
