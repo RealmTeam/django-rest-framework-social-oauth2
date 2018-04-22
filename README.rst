@@ -78,7 +78,8 @@ You can then enable the authentication classes for django rest framework by defa
         ...
         'DEFAULT_AUTHENTICATION_CLASSES': (
             ...
-            'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+            # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
+            'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
             'rest_framework_social_oauth2.authentication.SocialAuthentication',
         ),
     }
@@ -194,7 +195,8 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
         'DEFAULT_AUTHENTICATION_CLASSES': (
             ...
             # OAuth
-            'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+            # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
+            'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
             'rest_framework_social_oauth2.authentication.SocialAuthentication',
         )
     }
