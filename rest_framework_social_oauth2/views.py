@@ -4,7 +4,10 @@ import json
 from braces.views import CsrfExemptMixin
 from oauthlib.oauth2.rfc6749.endpoints.token import TokenEndpoint
 from oauth2_provider.oauth2_backends import OAuthLibCore
-from oauth2_provider.contrib.rest_framework import OAuth2Authentication
+try:
+    from oauth2_provider.contrib.rest_framework import OAuth2Authentication
+except ImportError:
+    from oauth2_provider.ext.rest_framework import OAuth2Authentication
 from oauth2_provider.models import Application, AccessToken
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
