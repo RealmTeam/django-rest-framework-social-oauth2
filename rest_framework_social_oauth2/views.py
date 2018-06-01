@@ -102,7 +102,7 @@ class RevokeTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
 @authentication_classes([OAuth2Authentication])
 @permission_classes([permissions.IsAuthenticated])
 def invalidate_sessions(request):
-    client_id = request.POST.get("client_id", None)
+    client_id = request.data.get("client_id", None)
     if client_id is None:
         return Response({
             "client_id": ["This field is required."]
