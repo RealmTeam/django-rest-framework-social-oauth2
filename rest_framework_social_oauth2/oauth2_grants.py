@@ -45,7 +45,7 @@ class SocialTokenGrant(RefreshTokenGrant):
         # to be used with the backend
         if request.token is None and request.code is None:
             raise errors.InvalidRequestError(
-                description='Missing token and code parameter.',
+                description='Missing token or code parameter.',
                 request=request)
 
         # We check that a backend parameter is present.
