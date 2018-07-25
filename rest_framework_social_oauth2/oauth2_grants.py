@@ -40,11 +40,12 @@ class SocialTokenGrant(RefreshTokenGrant):
         if request.grant_type != 'convert_token':
             raise errors.UnsupportedGrantTypeError(request=request)
 
-        # We check that a token parameter is present.
-        # It should contain the social token to be used with the backend
-        if request.token is None:
+        # We check that a either token or code parameter are present.
+        # It should contain the social token or authorization code
+        # to be used with the backend
+        if request.token is None and request.code is None:
             raise errors.InvalidRequestError(
-                description='Missing token parameter.',
+                description='Missing token and code parameter.',
                 request=request)
 
         # We check that a backend parameter is present.
