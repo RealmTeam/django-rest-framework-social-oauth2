@@ -47,6 +47,14 @@ class SocialTokenGrant(RefreshTokenGrant):
                 description='Missing token parameter.',
                 request=request)
 
+        # We check that a code parameter is present.
+        # It should contain the authorization code to authenticate with the
+        # backend auth server
+        if request.code is None:
+            raise errors.InvalidRequestError(
+                description='Missing code parameter.',
+                request=request)
+
         # We check that a backend parameter is present.
         # It should contain the name of the social backend to be used
         if request.backend is None:
@@ -105,6 +113,6 @@ class SocialTokenGrant(RefreshTokenGrant):
 
         if not user.is_active:
             raise errors.InvalidGrantError('User inactive or deleted.', request=request)
-        
+
         request.user = user
         log.debug('Authorizing access to user %r.', request.user)
