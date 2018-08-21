@@ -92,7 +92,7 @@ class SocialTokenGrant(RefreshTokenGrant):
                 request=request)
 
         try:
-            user = backend.do_auth(access_token=request.token)
+            user = backend.auth_complete(access_token=request.token)
         except requests.HTTPError as e:
             raise errors.InvalidRequestError(
                 description="Backend responded with HTTP{0}: {1}.".format(e.response.status_code,
