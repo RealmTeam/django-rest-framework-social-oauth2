@@ -3,9 +3,10 @@
 from __future__ import unicode_literals
 
 from oauth2_provider.oauth2_backends import OAuthLibCore
+from oauth2_provider.settings import oauth2_settings
 
 
-class KeepRequestCore(OAuthLibCore):
+class KeepRequestCore(oauth2_settings.OAUTH2_BACKEND_CLASS):
     """
     Subclass of OAuthLibCore used only for the sake of keeping the django
     request object by placing it in the headers.

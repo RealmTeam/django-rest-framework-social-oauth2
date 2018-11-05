@@ -3,7 +3,6 @@ import json
 
 from braces.views import CsrfExemptMixin
 from oauthlib.oauth2.rfc6749.endpoints.token import TokenEndpoint
-from oauth2_provider.oauth2_backends import OAuthLibCore
 try:
     from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 except ImportError:
@@ -33,7 +32,7 @@ class TokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
     """
     server_class = oauth2_settings.OAUTH2_SERVER_CLASS
     validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
-    oauthlib_backend_class = OAuthLibCore
+    oauthlib_backend_class = oauth2_settings.OAUTH2_BACKEND_CLASS
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
@@ -86,7 +85,7 @@ class RevokeTokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
     """
     server_class = oauth2_settings.OAUTH2_SERVER_CLASS
     validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
-    oauthlib_backend_class = OAuthLibCore
+    oauthlib_backend_class = oauth2_settings.OAUTH2_BACKEND_CLASS
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
