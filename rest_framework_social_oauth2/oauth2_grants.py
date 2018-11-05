@@ -17,6 +17,8 @@ from social_django.utils import load_backend, load_strategy
 from social_core.exceptions import MissingBackend, SocialAuthBaseException
 from social_core.utils import requests
 
+from .settings import DRFSO2_URL_NAMESPACE
+
 
 log = logging.getLogger(__name__)
 
@@ -84,7 +86,7 @@ class SocialTokenGrant(RefreshTokenGrant):
 
         try:
             backend = load_backend(strategy, request.backend,
-                                   reverse(NAMESPACE + ":complete", args=(request.backend,)))
+                                   reverse("%s:%s:complete" % (DRFSO2_URL_NAMESPACE, NAMESPACE) , args=(request.backend,)))
         except MissingBackend:
             raise errors.InvalidRequestError(
                 description='Invalid backend parameter.',
