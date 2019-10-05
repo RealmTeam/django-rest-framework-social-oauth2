@@ -96,6 +96,8 @@ The settings of this app are:
  - DRFSO2_PROPRIETARY_BACKEND_NAME sets the name of your Oauth2 social backend (e.g Facebook), defaults to "Django"
  - DRFSO2_URL_NAMESPACE sets the namespace for reversing urls.
 
+Setting up Application
+**********************
 
 Now go to django admin and add a new Application.
  - client_id and client_secret shouldn't be changed
@@ -228,6 +230,10 @@ To use Facebook as the authorization backend of your django-rest-framework api, 
         'fields': 'id, name, email'
     }
 
+Remember to add new Application in your Django admin (see section "Setting up Application").
+
+Testing
+*******
 
 - You can test these settings by running the following command :
 
@@ -240,3 +246,88 @@ You can find the id and secret of your app at https://developers.facebook.com/ap
 For testing purposes you can use the access token `<user_access_token>` from https://developers.facebook.com/tools/accesstoken/.
 
 For more information on how to configure python-social-auth with Facebook visit http://python-social-auth.readthedocs.io/en/latest/backends/facebook.html.
+
+
+Google Example
+--------------------
+
+To use Google OAuth2 as the authorization backend of your django-rest-framework api, your settings.py file should look like this:
+
+.. code-block:: python
+
+    INSTALLED_APPS = (
+        ...
+        # OAuth
+        'oauth2_provider',
+        'social_django',
+        'rest_framework_social_oauth2',
+    )
+
+    TEMPLATES = [
+        {
+            ...
+            'OPTIONS': {
+                'context_processors': [
+                    ...
+                    # OAuth
+                    'social_django.context_processors.backends',
+                    'social_django.context_processors.login_redirect',
+                ],
+            },
+        }
+    ]
+
+    REST_FRAMEWORK = {
+        ...
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            ...
+            # OAuth
+            # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
+            'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+            'rest_framework_social_oauth2.authentication.SocialAuthentication',
+        )
+    }
+
+    AUTHENTICATION_BACKENDS = (
+
+        # Others auth providers (e.g. Facebook, OpenId, etc)
+        ...
+
+		# Google OAuth2
+		'social_core.backends.google.GoogleOAuth2',
+
+        # django-rest-framework-social-oauth2
+        'rest_framework_social_oauth2.backends.DjangoOAuth2',
+
+        # Django
+        'django.contrib.auth.backends.ModelBackend',
+
+    )
+
+    # Google configuration
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = <your app key goes here>
+	SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = <your app secret goes here>
+
+    # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+	]
+
+Remember to add new Application in your Django admin (see section "Setting up Application").
+
+Testing
+*******
+
+You can test these settings by running the following command :
+
+    curl -X POST -d "grant_type=convert_token&client_id=<django-oauth-generated-client_id>&client_secret=<django-oauth-generated-client_secret>&backend=google-oauth2&token=<google_token>" http://localhost:8000/auth/convert-token
+
+This request returns the "access_token" that you should use on all HTTP requests with DRF. What is happening here is that we are converting a third-party access token (<user_access_token>) in an access token to use with your api and its clients ("access_token"). You should use this token on each and further communications between your system/application and your api to authenticate each request and avoid authenticating with Google every time.
+
+You can find the id and secret of your app at https://console.developers.google.com/apis/credentials
+and more information on how to create one on https://developers.google.com/identity/protocols/OAuth2.
+
+For testing purposes you can use the access token `<user_access_token>` from https://developers.google.com/oauthplayground/.
+
+For more information on how to configure python-social-auth with Google visit https://python-social-auth.readthedocs.io/en/latest/backends/google.html#google-oauth2.
