@@ -2,7 +2,12 @@
 import json
 
 from braces.views import CsrfExemptMixin
+from django.urls import reverse
 from oauthlib.oauth2.rfc6749.endpoints.token import TokenEndpoint
+from social_core.exceptions import MissingBackend
+from social_django.utils import load_strategy, load_backend
+from social_django.views import NAMESPACE
+
 try:
     from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 except ImportError:
@@ -123,3 +128,35 @@ def invalidate_sessions(request):
     tokens = AccessToken.objects.filter(user=request.user, application=app)
     tokens.delete()
     return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+
+class DisconnectBackendView(APIView):
+    """
+    An endpoint for disconnect social auth backend providers such as Facebook.
+    """
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def post(self, request, *args, **kwargs):
+        backend = request.data.get("backend", None)
+        if backend is None:
+            return Response({
+                "backend": ["This field is required."]
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        association_id = request.data.get("association_id", None)
+        if association_id is None:
+            return Response({
+                "association_id": ["This field is required."]
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        strategy = load_strategy(request=request)
+        try:
+            backend = load_backend(strategy, backend, reverse(NAMESPACE + ":complete", args=(backend,)))
+        except MissingBackend:
+            return Response({"backend": ["Invalid backend."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        backend.disconnect(user=self.get_object(), association_id=association_id, *args, **kwargs)
+        return Response(status=status.HTTP_204_NO_CONTENT)
