@@ -5,6 +5,8 @@ from oauth2_provider.views import AuthorizationView
 
 from .views import ConvertTokenView, TokenView, RevokeTokenView, invalidate_sessions
 
+app_name = 'drfso2'
+
 urlpatterns = [
     url(r'^authorize/?$', AuthorizationView.as_view(), name="authorize"),
     url(r'^token/?$', TokenView.as_view(), name="token"),
