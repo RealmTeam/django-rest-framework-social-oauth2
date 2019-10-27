@@ -13,6 +13,8 @@ from social_django.utils import load_backend, load_strategy
 from social_core.exceptions import MissingBackend
 from social_core.utils import requests
 
+from .settings import DRFSO2_URL_NAMESPACE
+
 
 class SocialAuthentication(BaseAuthentication):
     """
@@ -54,7 +56,7 @@ class SocialAuthentication(BaseAuthentication):
         strategy = load_strategy(request=request)
 
         try:
-            backend = load_backend(strategy, backend, reverse(NAMESPACE + ":complete", args=(backend,)))
+            backend = load_backend(strategy, backend, reverse("%s:%s:complete" % (DRFSO2_URL_NAMESPACE, NAMESPACE), args=(backend,)))
         except MissingBackend:
             msg = 'Invalid token header. Invalid backend.'
             raise exceptions.AuthenticationFailed(msg)
