@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 import logging
 
+from django.http import HttpRequest
+
 from oauthlib.common import Request
 from oauthlib.oauth2.rfc6749.endpoints.token import TokenEndpoint
 from oauthlib.oauth2.rfc6749.tokens import BearerToken
@@ -15,8 +17,10 @@ log = logging.getLogger(__name__)
 
 
 class SocialTokenServer(TokenEndpoint):
+    """An endpoint used only for token generation.
 
-    """An endpoint used only for token generation."""
+    Use this with the KeepRequestCore backend class.
+    """
 
     def __init__(self, request_validator, token_generator=None,
                  token_expires_in=None, refresh_token_generator=None, **kwargs):
@@ -32,6 +36,7 @@ class SocialTokenServer(TokenEndpoint):
         :param kwargs: Extra parameters to pass to authorization-,
                        token-, resource-, and revocation-endpoint constructors.
         """
+        self._params = {}
         refresh_grant = SocialTokenGrant(request_validator)
         bearer = BearerToken(request_validator, token_generator,
                              token_expires_in, refresh_token_generator)
@@ -41,17 +46,35 @@ class SocialTokenServer(TokenEndpoint):
                                },
                                default_token_type=bearer)
 
+    def set_request_object(self, request):
+        """This should be called by the KeepRequestCore backend class before
+        calling `create_token_response` to store the Django request object.
+        """
+        if not isinstance(request, HttpRequest):
+            raise TypeError(
+                "request must be an instance of 'django.http.HttpRequest'"
+            )
+        self._params['http_request'] = request
+
+    def pop_request_object(self):
+        """This is called internaly by `create_token_response`
+        to fetch the Django request object and cleanup class instance.
+        """
+        return self._params.pop('http_request', None)
+
     # We override this method just so we can pass the django request object
     @catch_errors_and_unavailability
     def create_token_response(self, uri, http_method='GET', body=None,
                               headers=None, credentials=None):
         """Extract grant_type and route to the designated handler."""
-        django_request = headers.pop("Django-request-object", None)
         request = Request(
             uri, http_method=http_method, body=body, headers=headers)
         request.scopes = None
         request.extra_credentials = credentials
-        request.django_request = django_request
+
+        # Make sure we consume the django request object
+        request.django_request = self.pop_request_object()
+
         grant_type_handler = self.grant_types.get(request.grant_type,
                                                   self.default_grant_type_handler)
         log.debug('Dispatching grant_type %s request to %r.',
