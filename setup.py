@@ -24,7 +24,6 @@ setup(
         'djangorestframework>=3.0.1',
         'django-oauth-toolkit>=0.9.0',
         'social-auth-app-django>=0.1.0',
-        'django-braces>=1.11.0',
     ],
     include_package_data=True,
     zip_safe=False,
