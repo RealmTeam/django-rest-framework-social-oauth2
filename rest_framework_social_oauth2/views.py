@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 
 from django.urls import reverse
@@ -9,10 +8,7 @@ from social_core.exceptions import MissingBackend
 from social_django.utils import load_strategy, load_backend
 from social_django.views import NAMESPACE
 
-try:
-    from oauth2_provider.contrib.rest_framework import OAuth2Authentication
-except ImportError:
-    from oauth2_provider.ext.rest_framework import OAuth2Authentication
+from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from oauth2_provider.models import Application, AccessToken
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin

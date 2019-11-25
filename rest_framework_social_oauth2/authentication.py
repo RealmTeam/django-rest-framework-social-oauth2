@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 try:
     from django.urls import reverse
 except ImportError:  # Will be removed in Django 2.0
