@@ -1,7 +1,8 @@
 import json
 
-from braces.views import CsrfExemptMixin
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from oauthlib.oauth2.rfc6749.endpoints.token import TokenEndpoint
 from social_core.exceptions import MissingBackend
 from social_django.utils import load_strategy, load_backend
@@ -19,6 +20,18 @@ from rest_framework.views import APIView
 
 from .oauth2_backends import KeepRequestCore
 from .oauth2_endpoints import SocialTokenServer
+
+
+class CsrfExemptMixin(object):
+    """
+    Exempts the view from CSRF requirements.
+    NOTE:
+        This should be the left-most mixin of a view.
+    """
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super(CsrfExemptMixin, self).dispatch(*args, **kwargs)
 
 
 class TokenView(CsrfExemptMixin, OAuthLibMixin, APIView):
