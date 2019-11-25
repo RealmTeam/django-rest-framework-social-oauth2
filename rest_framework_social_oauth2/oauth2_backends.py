@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 from oauth2_provider.oauth2_backends import OAuthLibCore
 from oauth2_provider.settings import oauth2_settings
 

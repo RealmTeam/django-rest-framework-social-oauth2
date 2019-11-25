@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.conf import settings
 
 DRFSO2_PROPRIETARY_BACKEND_NAME = getattr(settings, 'DRFSO2_PROPRIETARY_BACKEND_NAME', "Django")

@@ -1,4 +1,8 @@
 from setuptools import setup, find_packages
+import sys
+
+if sys.version_info < (3, 5):
+    raise SystemError("This package is for Python 3.5 and above.")
 
 setup(
     name='django-rest-framework-social-oauth2',
@@ -15,7 +19,6 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Django",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Software Development :: Libraries :: Python Modules",
