@@ -103,7 +103,7 @@ class SocialTokenGrant(RefreshTokenGrant):
                 .replace('(', ' ').replace(')', ' ').replace(' =', ':')\
                 .replace('exists', 'registered').strip()
             raise errors.CustomOAuth2Error(error='invalid_email_address',
-                                           status_code=400,
+                                           status_code=409,
                                            description=e_msg)
 
         if not user:
