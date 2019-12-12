@@ -5,6 +5,7 @@ try:
 except ImportError:  # Will be removed in Django 2.0
     from django.core.urlresolvers import reverse
 
+from django.db import IntegrityError
 from oauthlib.oauth2.rfc6749 import errors
 from oauthlib.oauth2.rfc6749.grant_types.refresh_token import RefreshTokenGrant
 
@@ -97,6 +98,13 @@ class SocialTokenGrant(RefreshTokenGrant):
                 request=request)
         except SocialAuthBaseException as e:
             raise errors.AccessDeniedError(description=str(e), request=request)
+        except IntegrityError as e:
+            e_msg = e.args[0][e.args[0].find('(email)'):]\
+                .replace('(', ' ').replace(')', ' ').replace(' =', ':')\
+                .replace('exists', 'registered').strip()
+            raise errors.CustomOAuth2Error(error='invalid_email_address',
+                                           status_code=400,
+                                           description=e_msg)
 
         if not user:
             raise errors.InvalidGrantError('Invalid credentials given.', request=request)
