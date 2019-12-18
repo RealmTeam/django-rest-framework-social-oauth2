@@ -12,4 +12,4 @@ class DjangoOAuth2(BaseOAuth2):
     AUTHORIZATION_URL = reverse(DRFSO2_URL_NAMESPACE + ':authorize'
                                 if DRFSO2_URL_NAMESPACE else 'authorize')
     ACCESS_TOKEN_URL = reverse(DRFSO2_URL_NAMESPACE + ':token'
-                               if DRFSO2_URL_NAMESPACE else 'authorize')
+                               if DRFSO2_URL_NAMESPACE else 'token')
