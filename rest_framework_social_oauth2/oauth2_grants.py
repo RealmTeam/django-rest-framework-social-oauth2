@@ -93,7 +93,7 @@ class SocialTokenGrant(RefreshTokenGrant):
             user = backend.do_auth(access_token=request.token)
             user_data = backend.user_data(access_token=request.token)
             exp = user_data['exp']
-            if exp is not None and exp <= int(time.time()):
+            if not exp and exp <= datetime.now():
                raise errors.InvalidTokenError('Token has expired', request=request)
 
         except requests.HTTPError as e:
