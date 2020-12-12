@@ -1,7 +1,10 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.contrib.auth import get_user_model
 from oauth2_provider.models import Application
-from django.contrib.auth.models import User
 from oauth2_provider.generators import generate_client_id, generate_client_secret
+
+
+User = get_user_model()
 
 
 class Command(BaseCommand):
@@ -23,7 +26,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         new_application = Application(
-            user= User.objects.filter(is_superuser=True)[0],
+            user=User.objects.filter(is_superuser=True)[0],
             client_type="confidential",
             authorization_grant_type="password",
             name=options["name"] or "socialauth_application",
