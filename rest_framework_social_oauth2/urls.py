@@ -1,4 +1,5 @@
-from django.conf.urls import url, include
+from django.conf.urls import include
+from django.urls import re_path as url
 from oauth2_provider.views import AuthorizationView
 
 from .views import ConvertTokenView, TokenView, RevokeTokenView, invalidate_sessions, DisconnectBackendView
