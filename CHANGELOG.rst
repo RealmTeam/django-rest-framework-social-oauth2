@@ -1,6 +1,42 @@
 Change log
 ==========
 
+1.2.0 - 2024-01-12
+------------------
+
+- Add support for Django 4.0
+- Drop support for python 2, enforce python >=3.5
+- Reference the User model with get_user_model()
+- Fix ACCESS_TOKEN_URL namespace
+- Refactor README
+- Bump dependencies
+- Remove django-braces dependency
+- Set Django request object through a server method call
+- Added a new Django Rest Framework view to disconnect backend
+- Update documentation with Google example
+- Create manage.py command to create an application
+- Remove harcoded oauthlibcore
+- Fix NoRerverseMatch Error with custom namespace
+- Updated invalidate_sessions to accept all POST content types
+- Restore compatibility with Django<2.0
+- Keep request.data mutable
+- Added compatibility with Django 2.0
+
+1.1.0 - 2018-01-25
+------------------
+
+- <missing changelog>
+
+1.0.8 - 2017-06-18
+------------------
+
+- Added `django-braces` as a dependency
+
+1.0.7 - 2017-06-17
+------------------
+
+- Added support for `django-oauth-toolkit` 1.0.0
+
 1.0.6 - 2017-05-22
 ------------------
 
