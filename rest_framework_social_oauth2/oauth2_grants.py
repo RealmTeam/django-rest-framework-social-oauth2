@@ -1,4 +1,5 @@
 import logging
+import time
 
 try:
     from django.urls import reverse
@@ -90,6 +91,11 @@ class SocialTokenGrant(RefreshTokenGrant):
 
         try:
             user = backend.do_auth(access_token=request.token)
+            user_data = backend.user_data(access_token=request.token)
+            exp = user_data['exp']
+            if not exp and exp <= datetime.now():
+               raise errors.InvalidTokenError('Token has expired', request=request)
+
         except requests.HTTPError as e:
             raise errors.InvalidRequestError(
                 description="Backend responded with HTTP{0}: {1}.".format(e.response.status_code,
