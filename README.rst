@@ -102,7 +102,7 @@ The settings of this  app are:
 Setting Up a New Application
 ----------------------------
 
-Go to Django admin and add a new Application with the following configuration:
+Go to Django admin and add a new Application (in the Django OAuth Toolkit section) with the following configuration:
 
 - ``client_id`` and ``client_secret`` should be left unchanged
 - ``user`` should be your superuser
