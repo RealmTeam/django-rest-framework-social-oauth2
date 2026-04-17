@@ -1,6 +1,15 @@
 Django REST Framework Social OAuth2
 ===================================
 
+.. warning::
+
+   **This project is deprecated and no longer maintained.**
+
+   Please use `django-allauth <https://github.com/pennersr/django-allauth>`_ instead, which provides a comprehensive, actively maintained solution for social authentication in Django REST Framework.
+
+   - GitHub: https://github.com/pennersr/django-allauth
+   - PyPI: https://pypi.org/project/django-allauth/
+
 .. image:: https://badge.fury.io/py/django-rest-framework-social-oauth2.svg
     :target: http://badge.fury.io/py/django-rest-framework-social-oauth2
 
