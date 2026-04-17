@@ -54,7 +54,11 @@ class SocialAuthentication(BaseAuthentication):
         strategy = load_strategy(request=request)
 
         try:
-            backend = load_backend(strategy, backend, reverse("%s:%s:complete" % (DRFSO2_URL_NAMESPACE, NAMESPACE), args=(backend,)))
+            if DRFSO2_URL_NAMESPACE:
+                path = "%s:%s:complete" % (DRFSO2_URL_NAMESPACE, NAMESPACE)
+            else:
+                path = "%s:complete" % (NAMESPACE)
+            backend = load_backend(strategy, backend, reverse(path, args=(backend,)))
         except MissingBackend:
             msg = 'Invalid token header. Invalid backend.'
             raise exceptions.AuthenticationFailed(msg)
